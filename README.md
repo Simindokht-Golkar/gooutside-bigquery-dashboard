@@ -1,5 +1,7 @@
 # GoOutside – From four CSV files to a data platform
 
+![Data Studio dashboard – overview](images/dashboard_overview.png)
+
 **BigQuery · SQL · Google Sheets (Connected Sheets) · Data Studio (Looker Studio)**
 
 A data warehouse, two self-service spreadsheets and an interactive dashboard for an outdoor-equipment company whose data analyst had left, leaving the sales data locked in four CSV files.
@@ -68,6 +70,12 @@ Every tool reads from the same BigQuery views, so every number matches everywher
 - **Order channels** (Sarah): channel share per year, loss rate per channel, channel details table
 - **Markets** (Dustin): concentrated vs competitive markets, HHI by country with the 2,500 threshold, store types, market table with targets
 - Shared filters (year, country, order method, product line) across all charts
+
+| Finance: channel calculator | Retail: markets and targets |
+|---|---|
+| ![Channel calculator](images/sarah_calculator.png) | ![Markets tab](images/dustin_markets.png) |
+
+![Data Studio dashboard – markets page](images/dashboard_markets.png)
 
 ## Key findings
 
