@@ -87,10 +87,9 @@ Every check and decision is documented in [`docs/decision-log.md`](docs/decision
 - **HHI threshold 2,500:** from the US DOJ & FTC Horizontal Merger Guidelines (2010); the stricter 2023 threshold (1,800) is noted as an alternative.
 
 ## Live tools
-
-- 📊 Data Studio dashboard: *[add link]*
-- 📗 Finance sheet: *[add link]*
-- 📘 Retail Partnerships sheet: *[add link]*
+- 📊 Data Studio dashboard: [Open the dashboard](https://datastudio.google.com/reporting/15da17b7-2a9c-4d75-882a-b4b6f0c1431e)
+- 📗 Finance sheet (Sarah): [Open the Finance sheet](https://docs.google.com/spreadsheets/d/1o0rJt5v6q8BMmRULRMDZbHCSVwhK3t7wZJ2mYqewv1I/edit?usp=sharing)
+- 📘 Retail Partnerships sheet (Dustin): [Open the Retail Partnerships sheet](https://docs.google.com/spreadsheets/d/1OJWFywG9htRaQl2Fw3h_0O7NS42OPObYNix5NNlwr_8/edit?usp=sharing)
 
 ## Repository structure
 
