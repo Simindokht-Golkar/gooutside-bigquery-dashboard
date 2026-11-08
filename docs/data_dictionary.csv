@@ -1,0 +1,55 @@
+Section,Name,Meaning,How it is calculated / where it comes from,Notes
+Column (v_sales_full),order_date,Date of the sale,daily_sales.Date,"Sales are recorded on about 123 days per year, in blocks of consecutive weekdays"
+Column (v_sales_full),order_year,Year of the sale,EXTRACT(YEAR FROM Date),2018 = Jan to 20 Jul only
+Column (v_sales_full),order_quarter,Quarter of the sale (1–4),EXTRACT(QUARTER FROM Date),
+Column (v_sales_full),order_month,Month of the sale (first day of the month),"DATE_TRUNC(Date, MONTH)",Use for monthly trend charts
+Column (v_sales_full),retailer_code,ID of the retailer (customer),daily_sales.Retailer code,Key to the retailers table
+Column (v_sales_full),retailer_name,Name of the retailer,retailers.Retailer name,
+Column (v_sales_full),retailer_type,Store type of the retailer,retailers.Type,"8 types, e.g. Outdoors Shop, Golf Shop"
+Column (v_sales_full),country,Country of the retailer,retailers.Country,21 countries
+Column (v_sales_full),product_number,ID of the product,daily_sales.Product number,Key to the products table
+Column (v_sales_full),product_name,Name of the product,products.Product,Some names exist in several colours (different product numbers)
+Column (v_sales_full),product_line,Product line,products.Product line,5 lines
+Column (v_sales_full),product_type,Product type,products.Product type,21 types
+Column (v_sales_full),brand,Brand of the product (supplier),products.Product brand,26 brands
+Column (v_sales_full),order_method,How the order was placed,methods.Order method type,7 methods used; codes 8–12 ('Other') never used
+Column (v_sales_full),quantity,Number of items in the order line,daily_sales.Quantity,
+Column (v_sales_full),unit_price,Normal price per item on the day of the sale,daily_sales.Unit price,Price before discount
+Column (v_sales_full),unit_sale_price,Price per item the customer actually paid,daily_sales.Unit sale price,After discount; 0 = given away
+Column (v_sales_full),unit_cost,Cost per item for GoOutside,products.Unit cost,One value per product (no cost history)
+Column (v_sales_full),regular_price,Regular retail price per item,products.Unit price,One value per product; for 80 products with a price change this price was never actually charged
+Column (v_sales_full),revenue,Money received for the order line,quantity × unit_sale_price,
+Column (v_sales_full),cost,Cost of the goods in the order line,quantity × unit_cost,
+Column (v_sales_full),profit,Actual (realised) profit of the order line,quantity × (unit_sale_price − unit_cost),Estimate: unit cost exists only once per product
+Column (v_sales_full),discount_value,Money given away as discount,quantity × (unit_price − unit_sale_price),
+Column (v_sales_full),is_discounted,TRUE if sold below the normal price,unit_sale_price < unit_price,25.3% of order lines
+Column (v_sales_full),is_free,TRUE if the product was given away,unit_sale_price = 0,524 order lines
+Column (v_sales_full),is_loss,TRUE if sold below cost,unit_sale_price < unit_cost,613 order lines (includes the free ones)
+Column (v_sales_full),loss_category,Label: Given away / Sold below cost / Profitable,CASE in the BigQuery view,"Defined once in the warehouse, used by Sheets and Looker Studio"
+KPI / measure,Total sales,Sum of all revenue,SUM(revenue),"1,251.5 M (Jan 2015 – Jul 2018)"
+KPI / measure,Profit,Actual realised profit,SUM(profit),527.7 M; confirmed with instructor as the profit KPI
+KPI / measure,Margin %,Share of revenue that is profit,SUM(profit) ÷ SUM(revenue),"Weighted, never an average of row margins; about 42% overall"
+KPI / measure,Margin at regular price,Profit per item if sold at the regular price,regular_price − unit_cost (÷ regular_price for %),Per product; used for product comparison and pricing
+KPI / measure,Discount %,Share of the full price given away,SUM(discount_value) ÷ (SUM(revenue) + SUM(discount_value)),5.0% overall
+KPI / measure,Regional sales,Revenue per country,SUM(revenue) by country,
+KPI / measure,Active retailers,Retailers with at least one sale,COUNT DISTINCT retailer_code in the sales,289 of 562 listed retailers
+KPI / measure,Brands (suppliers),Brands with at least one sale,COUNT DISTINCT brand in the sales,26
+KPI / measure,Order lines,Number of rows in the sales data,COUNT of rows,Used as 'number of orders' because there is no order ID
+KPI / measure,Year-over-year growth,Change compared with the previous year,(this year − last year) ÷ last year,Compare the same period (1 Jan – 20 Jul) because 2018 is partial
+Known data caveat,No order ID,One row = one retailer × product × order method × day,Data structure,Order lines are counted instead of orders
+Known data caveat,2018 is partial,Data ends on 20 Jul 2018,daily_sales,Label 2018 as Jan–Jul; compare same periods
+Known data caveat,Duplicate rows,"802 exact duplicate rows (0.5% of rows, 0.09% of revenue)",Data quality check 1.4,Kept as genuine repeat orders; removing them changes no finding
+Known data caveat,Inactive retailers,273 of 562 listed retailers never ordered,Data quality check 1.3,Includes all 30 Equipment Rental Stores
+Known data caveat,Unused order methods,Codes 8–12 ('Other') never appear in sales,Data quality check 1.3,Left out of charts
+Known data caveat,Unsold products,30 of 274 products were never sold,Data quality check 1.3,Open question for the product team
+Known data caveat,Single unit cost,"Cost exists once per product, prices changed over time",products table,Profit is an estimate
+Known data caveat,Free and below-cost sales,"613 order lines sold below cost, loss −1.06 M",Data quality check 1.6,92% of the loss from products given away at price 0
+Known data caveat,No personnel costs,Staff cost per order method is not in the data,All tables,Entered by the user in the Channel calculator
+Tab in this file,Start here,KPI overview with year dropdown,Helper tab kpi_data + XLOOKUP,
+Tab in this file,Sales by channel,"Revenue per order method and year, heatmap, share chart",Connected pivot on v_sales_full,
+Tab in this file,Channel details,"Revenue, profit, order lines, retailers, discounts and margin per order method",Connected pivot on v_sales_full,
+Tab in this file,Profit & margin,"Profit and margin per product line and year, two charts",Connected pivot on v_sales_full,
+Tab in this file,Losses,Sales below cost by product and loss type,"Connected pivot, filter is_loss = TRUE",
+Tab in this file,Channel calculator,Enter staff cost per channel and see Keep / Review,Helper tab calc_data + INDEX/MATCH,Base year selectable; 2018 divided by 7 months
+Tab in this file,Data dictionary,This page,,
+Tab in this file,v_sales_full,Live connection to the BigQuery view,BigQuery: gooutside-512908.GoOutside.v_sales_full,Refreshes daily; shows a 500-row preview only
